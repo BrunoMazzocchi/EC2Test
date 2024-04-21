@@ -1,7 +1,9 @@
 import bodyParser from "body-parser";
 import express from "express";
 import mysql from "mysql";
+import path, { dirname } from "path";
 import readline from "readline";
+import { fileURLToPath } from "url";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -9,9 +11,9 @@ const rl = readline.createInterface({
 });
 
 const mysqlClient = mysql.createConnection({
-  host: "ls-51e3e12dc61fb5840de5e194782af06c35e82d27.c10wqi0k2xb7.us-east-1.rds.amazonaws.com",
-  user: "dbmasteruser",
-  password: "2])BeL-[c&(o7MrJx6y1}Vmw.ZN~j^5>",
+  host: "",
+  user: "remote_user",
+  password: "strong_password",
   database: "pokemon",
 });
 
@@ -23,7 +25,15 @@ mysqlClient.connect((err) => {
   console.log("Conexión exitosa a la base de datos");
 });
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const app = express();
+app.use(express.static(path.join(__dirname, "pages")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "pages", "index.html"));
+});
 
 app.get("/pokemon", (req, res) => {
   const query = "SELECT * FROM pokemon";

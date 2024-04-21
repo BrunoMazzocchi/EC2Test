@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pokemon Data</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"
+    />
+  </head>
+  <body>
+    <table id="pokemonTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Weight</th>
+          <th>Image</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $.ajax({
+          url: "/pokemon",
+          method: "GET",
+          success: function (data) {
+            var table = $("#pokemonTable").DataTable();
+            data.forEach(function (pokemon) {
+              table.row
+                .add([
+                  pokemon.id,
+                  pokemon.name,
+                  pokemon.weight,
+                  `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png" onerror="this.onerror=null; this.src='path/to/notfound.png';">`,
+                ])
+                .draw();
+            });
+          },
+          error: function () {
+            console.log("Error occurred while fetching Pokemon data.");
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
