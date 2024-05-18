@@ -1,20 +1,26 @@
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
 import express from "express";
 import mysql from "mysql";
 import path, { dirname } from "path";
 import readline from "readline";
 import { fileURLToPath } from "url";
 
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = dirname(_filename);
+
+dotenv.config({ path: path.resolve(_dirname, ".env") });
+
+const mysqlClient = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
+
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-});
-
-const mysqlClient = mysql.createConnection({
-  host: "",
-  user: "remote_user",
-  password: "strong_password",
-  database: "pokemon",
 });
 
 mysqlClient.connect((err) => {

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+    image: your-app-name
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    depends_on:
+      - wait-for-db
+    entrypoint: ["/wait-for-it.sh", "${DB_HOST}:${DB_PORT}", "--", "your-entrypoint.sh"]
+  
+  wait-for-db:
+    image: busybox
+    entrypoint: ["sh", "-c", "until nc -z ${DB_HOST} ${DB_PORT}; do echo waiting for db; sleep 3; done;"]
